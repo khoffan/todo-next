@@ -40,17 +40,16 @@ export default function FromAction({ saveTodo }) {
 
 					const fromData = new FormData(event.target);
 					ref.current?.reset("");
-					const result = await saveTodo(fromData);
-					setCurrentData(result.value);
+					await saveTodo(fromData);
 				}}
-				className="w-1/2 flex justify-evenly"
+				className="w-full flex gap-4 justify-center"
 			>
 				<input
 					type="text"
 					name="todo"
 					placeholder="todo"
 					required
-					className="bg-inherit rounded-md border border-2 border-blue-700 pl-2"
+					className="bg-inherit w-1/2 rounded-md border border-2 border-blue-700 pl-2"
 				/>
 				<select
 					name="status"
@@ -59,7 +58,7 @@ export default function FromAction({ saveTodo }) {
 					ref={selectRef}
 					required
 					onChange={handleSelectChange}
-					className="bg-inherit appearance-none p-2 border border-2 border-blue-500 cursor-pointer hover:ring-blue-600 focus:outline-none "
+					className="bg-inherit appearance-none w-[150px] p-2 border border-2 border-blue-500 cursor-pointer hover:ring-blue-600 focus:outline-none "
 				>
 					<option value="" disabled className="text-gray-400 bg-gray-200">
 						สถานะ
@@ -77,7 +76,10 @@ export default function FromAction({ saveTodo }) {
 						Closed
 					</option>
 				</select>
-				<button type="submit" className="px-4 py-2 bg-blue-400 text-white rounded-lg ">
+				<button
+					type="submit"
+					className="px-4 py-2 w-[80px] bg-blue-400 text-white rounded-lg "
+				>
 					Add
 				</button>
 			</form>

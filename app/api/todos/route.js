@@ -14,14 +14,18 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-	const { todo_name, todo_status } = await request.json();
+	try {
+		const { todo_name, todo_status } = await request.json();
 
-	await prima.todos.create({
-		data: {
-			todo_name,
-			todo_status
-		}
-	});
+		await prima.todos.create({
+			data: {
+				todo_name,
+				todo_status
+			}
+		});
 
-	return Response.json({ result: "ok" });
+		return Response.json({ result: "ok" });
+	} catch (error) {
+		console.log(error);
+	}
 }

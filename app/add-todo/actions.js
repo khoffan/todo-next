@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function saveTodo(fromData) {
 	const todo = fromData.get("todo");
@@ -26,5 +27,19 @@ export async function saveTodo(fromData) {
 		//return res.json;
 	} catch (error) {
 		console.log("error", error);
+	} finally {
+		redirect("/");
+	}
+}
+
+export async function deleteTodo(todoId) {
+	try {
+		const res = await fetch(`http://localhost:3000/api/todos/${todoId}`, {
+			method: "DELETE"
+		});
+		const result = await res.json();
+		if (result) revalidatePath("/");
+	} catch (error) {
+		console.log(error);
 	}
 }
