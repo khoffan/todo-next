@@ -1,13 +1,24 @@
+import Link from "next/link";
 import FromAction from "../_components/FromAction";
 import { saveTodo } from "./actions";
 
-export default async function Todo() {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+export default function Todo() {
 	return (
-		<div className="flex flex-col justify-center items-center h-full">
-			<div className="z-2 rounded-lg shadow-xl shadow-blue-400 w-1/2 h-[500px] py-4 flex flex-col gap-4 items-center bg-white">
+		<>
+			<div className="w-full px-6 flex flex-rows justify-between">
+				<Link href={"/"} className="relative w-[30px] h-[20px]">
+					<FontAwesomeIcon
+						icon={faArrowLeft}
+						className="text-2xl hover:text-blue-400 hover:transition-all duration-500"
+					/>
+				</Link>
 				<p className="text-2xl font-bold">Todo list</p>
-				<FromAction saveTodo={saveTodo} />
+				<div></div>
 			</div>
-		</div>
+			<FromAction functionTodo={saveTodo} todoId={null} />
+		</>
 	);
 }

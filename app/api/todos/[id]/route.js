@@ -2,6 +2,19 @@ import { PrismaClient } from "@prisma/client";
 
 const prima = new PrismaClient();
 const now = new Date();
+
+export async function GET(req, { params }) {
+	try {
+		const todoId = (await params).id;
+		const result = await prima.todos.findUnique({
+			where: { id: todoId }
+		});
+		return Response.json(result);
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function PUT(request, { params }) {
 	try {
 		const { todo_name, todo_status } = await request.json();

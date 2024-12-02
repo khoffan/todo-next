@@ -1,63 +1,154 @@
 "use client";
-import React, { useRef, useState } from "react";
+import { faL, fas } from "@fortawesome/free-solid-svg-icons";
+import React, { useRef, useState, useEffect } from "react";
 
-export default function FromAction({ saveTodo }) {
-	const ref = useRef();
-	const [currentData, setCurrentData] = useState(null);
+export default function FromAction({ functionTodo, todoId }) {
+	const [currentData, setCurrentData] = useState({
+		todo_name: "",
+		todo_status: "",
+		color: "black"
+	});
+	const [previews, setPreviews] = useState([]);
+	const [isEdit, setIsedit] = useState(false);
 	const selectRef = useRef(null);
 
-	const handleSelectChange = (event) => {
-		const value = event.target.value;
-
-		// กำหนดสีพื้นหลังของ select ตาม value ที่เลือก
-		if (selectRef.current) {
-			switch (value) {
-				case "pending":
-					selectRef.current.style.color = "blue";
-					break;
-				case "In-procress":
-					selectRef.current.style.color = "gold";
-					break;
-				case "Completed":
-					selectRef.current.style.color = "green";
-					break;
-				case "Closed":
-					selectRef.current.style.color = "red";
-					break;
-				default:
-					selectRef.current.style.color = "#f9f9f9";
-					break;
+	const fetchData = async (id) => {
+		const res = await fetch(`http://localhost:3000/api/todos/${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
 			}
+		});
+		const result = await res.json();
+		setCurrentData(result);
+	};
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setCurrentData((prevState) => ({
+			...prevState,
+			[name]: value
+		}));
+	};
+
+	const handleUpdate = () => {
+		try {
+			let todo_name = currentData.todo_name;
+			let todo_status = currentData.todo_status;
+			functionTodo(todo_name, todo_status, todoId);
+			alert("update สำเร็จ");
+		} catch (error) {
+			alert("update ไม่สำเร็จ");
 		}
 	};
+
+	const handleAddTodo = (event) => {
+		event.preventDefault();
+
+		try {
+			const fromData = {
+				todo_name: currentData.todo_name,
+				todo_status: currentData.todo_status
+			};
+
+			const storeLocal = JSON.parse(localStorage.getItem("todos")) || [];
+
+			const updateTodo = [...storeLocal, fromData];
+
+			localStorage.setItem("todos", JSON.stringify(updateTodo));
+			setPreviews(updateTodo);
+			setCurrentData({
+				todo_name: "",
+				todo_status: ""
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleDeleteTodo = (index) => {
+		try {
+			const storeTodo = JSON.parse(localStorage.getItem("todos")) || [];
+
+			const updateAndDelete = storeTodo.filter((_, i) => i !== index);
+
+			localStorage.setItem("todos", JSON.stringify(updateAndDelete));
+
+			setPreviews(updateAndDelete);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleSelectChange = (event) => {
+		const { name, value } = event.target;
+
+		// กำหนดสีตามสถานะ
+		let color;
+
+		switch (value || currentData.todo_status) {
+			case "pending":
+				color = "blue";
+				break;
+			case "In-procress":
+				color = "gold";
+				break;
+			case "Completed":
+				color = "green";
+				break;
+			case "Closed":
+				color = "red";
+				break;
+			default:
+				color = "#f9f9f9";
+				break;
+		}
+		if (selectRef.current) {
+			selectRef.current.style.color = color;
+		}
+
+		// อัปเดต state
+		setCurrentData((prevState) => ({
+			...prevState,
+			[name]: value,
+			color // อัปเดตสีใน state
+		}));
+	};
+
+	useEffect(() => {
+		if (todoId) {
+			fetchData(todoId);
+			setIsedit(true);
+		}
+	}, [todoId]);
+
+	useEffect(() => {
+		const storedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+		setPreviews(storedTodos); // โหลดข้อมูลเข้า state เมื่อ component mount
+	}, []);
 
 	return (
 		<>
 			<form
-				ref={ref}
-				onSubmit={async (event) => {
-					event.preventDefault();
-
-					const fromData = new FormData(event.target);
-					ref.current?.reset("");
-					await saveTodo(fromData);
-				}}
+				onSubmit={isEdit ? handleUpdate : handleAddTodo}
 				className="w-full flex gap-4 justify-center"
 			>
 				<input
 					type="text"
-					name="todo"
+					name="todo_name"
 					placeholder="todo"
+					value={currentData.todo_name || ""}
+					onChange={handleInputChange}
 					required
 					className="bg-inherit w-1/2 rounded-md border border-2 border-blue-700 pl-2"
 				/>
 				<select
-					name="status"
+					name="todo_status"
 					id="status"
-					defaultValue=""
-					ref={selectRef}
+					value={currentData.todo_status || ""}
 					required
 					onChange={handleSelectChange}
+					style={{ color: currentData.color }}
 					className="bg-inherit appearance-none w-[150px] p-2 border border-2 border-blue-500 cursor-pointer hover:ring-blue-600 focus:outline-none "
 				>
 					<option value="" disabled className="text-gray-400 bg-gray-200">
@@ -80,11 +171,40 @@ export default function FromAction({ saveTodo }) {
 					type="submit"
 					className="px-4 py-2 w-[80px] bg-blue-400 text-white rounded-lg "
 				>
-					Add
+					{isEdit ? "Update" : "Add"}
 				</button>
 			</form>
-			{/* แสดงข้อมูลที่เพิ่มเข้าไป */}
-			<div>{currentData != null && <p>{currentData.todo_name}</p>}</div>
+			<div className="flex justify-center w-full min-h-[400px] overflow-auto mt-4">
+				<table className="w-[90%] rounded-lg shadow-lg border-collapse overflow-hidden">
+					<thead className="bg-blue-600 text-white">
+						<tr>
+							<th className="p-4 text-left">Todo Name</th>
+							<th className="p-4 text-left">Todo Status</th>
+							<th className="p-4 text-left">Actions</th>
+						</tr>
+					</thead>
+					<tbody className="bg-gray-50">
+						{previews.length > 0 &&
+							previews.map((preview, index) => (
+								<tr
+									key={index}
+									className="border-t border-gray-300 hover:bg-gray-100"
+								>
+									<td className="p-4">{preview.todo_name}</td>
+									<td className="p-4">{preview.todo_status}</td>
+									<td className="p-4 text-center">
+										<button
+											onClick={() => handleDeleteTodo(index)}
+											className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
+										>
+											Delete
+										</button>
+									</td>
+								</tr>
+							))}
+					</tbody>
+				</table>
+			</div>
 		</>
 	);
 }

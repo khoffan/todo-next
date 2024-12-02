@@ -4,8 +4,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function saveTodo(fromData) {
-	const todo = fromData.get("todo");
-	const todo_status = fromData.get("status");
+	const todo = fromData["todo_name"];
+	const todo_status = fromData["todo_status"];
+	console.log({
+		todo,
+		todo_status
+	});
 	if (!todo) {
 		return { message: "ไม่มี todo", value: "" };
 	}
@@ -22,9 +26,7 @@ export async function saveTodo(fromData) {
 			return { message: "ไม่มีการเพิ่ม todo ใหม่" };
 		}
 		const result = await res.json();
-		if (result) return { message: "เพิ่ม todo สำเร็จ", value: dataObj };
-		revalidatePath("/");
-		//return res.json;
+		if (result) return { message: "เพิ่ม todo สำเร็จ", value: dataObj }; //return res.json;
 	} catch (error) {
 		console.log("error", error);
 	} finally {
@@ -38,7 +40,10 @@ export async function deleteTodo(todoId) {
 			method: "DELETE"
 		});
 		const result = await res.json();
-		if (result) revalidatePath("/");
+		if (result) {
+			revalidatePath("/");
+			return result;
+		}
 	} catch (error) {
 		console.log(error);
 	}
