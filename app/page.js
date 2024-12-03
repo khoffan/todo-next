@@ -2,11 +2,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import Loading from "./loading";
 import TodoLabel from "./_components/todo_label";
-import { resolve } from "styled-jsx/css";
 let todoList = [];
 export default async function Home() {
-	await new Promise((resolve) => setInterval(resolve, 1000));
-
 	try {
 		const res = await fetch("http://localhost:3000/api/todos", {
 			method: "GET",
