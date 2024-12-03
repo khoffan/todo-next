@@ -1,11 +1,11 @@
+import FromAction from "@/app/_components/FromAction";
 import Link from "next/link";
-import FromAction from "../_components/FromAction";
-import { saveTodo } from "./actions";
+import { updateTodo } from "./action";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
-export default function Todo() {
+export default async function page({ params }) {
+	const { id } = await params;
 	return (
 		<>
 			<div className="w-full px-6 flex flex-rows justify-between">
@@ -15,10 +15,10 @@ export default function Todo() {
 						className="text-2xl hover:text-blue-400 hover:transition-all duration-500"
 					/>
 				</Link>
-				<p className="text-2xl font-bold">Add Todo list</p>
+				<p className="text-2xl font-bold">Todo list</p>
 				<div></div>
 			</div>
-			<FromAction functionTodo={saveTodo} todoId={null} />
+			<FromAction functionTodo={updateTodo} todoId={id} />
 		</>
 	);
 }

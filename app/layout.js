@@ -1,6 +1,10 @@
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
+
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
 	variable: "--font-geist-sans",
@@ -23,7 +27,11 @@ export default function RootLayout({ children }) {
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen bg-blue-800`}
 			>
-				{children}
+				<div className="flex flex-col justify-center items-center h-full">
+					<div className="z-2 rounded-lg shadow-xl shadow-blue-400 w-[80%] h-[80%] py-4 flex flex-col gap-4 items-center bg-white">
+						{children}
+					</div>
+				</div>
 			</body>
 		</html>
 	);
