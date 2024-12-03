@@ -8,7 +8,7 @@ export async function updateTodo(updateTodo, todoId) {
 		if ((todoId, updateTodo) != null) {
 			const todoObj = updateTodo[0];
 			const { todo_name, todo_status } = todoObj;
-			const res = await fetch(`http://localhost:3000/api/todos/${todoId}`, {
+			const res = await fetch(`${process.env.API_URL}/api/todos/${todoId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json"
