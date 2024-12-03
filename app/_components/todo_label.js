@@ -9,39 +9,45 @@ export default function TodoLabel({ todo_name, todo_status, id }) {
 
 	const statusClass =
 		todo_status === "pending"
-			? "bg-blue-500 text-white"
+			? "text-blue-500"
 			: todo_status === "Completed"
-			? "bg-green-500 text-white"
-			: todo_status === "closed"
-			? "bg-red-500 text-white"
+			? "text-green-500"
+			: todo_status === "Closed"
+			? "text-red-500"
 			: todo_status === "In-procress"
-			? "bg-yellow-400 text-white"
+			? "text-yellow-400"
 			: "bg-gray-500 text-black";
 
 	return (
-		<tr className="">
-			<td className="text-xl font-base text-start border border-slate-400">{todo_name}</td>
-			<td className={`p-2 text-start border border-slate-400 rounded-lg ${statusClass}`}>
+		<tr className="hover:bg-gray-100 transition-all">
+			<td className="px-4 py-2 text-xl font-medium text-gray-800 border border-slate-300">
+				{todo_name}
+			</td>
+			<td
+				className={`px-4 py-2 text-start font-bold border border-slate-300 rounded-md ${
+					statusClass || "bg-gray-200 text-gray-600"
+				}`}
+			>
 				{todo_status || "ไม่มีสถานะ"}
 			</td>
-			<td className="flex ">
+			<td className="px-4 py-2 flex gap-2 justify-start items-center">
 				{id ? (
 					<>
 						<Link
 							href={`/edit-todo/${id}`}
-							className="block p-2 w-[60px] bg-yellow-600 text-white rounded-lg mx-2"
+							className="p-2 w-[80px] text-center bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-all"
 						>
 							Edit
 						</Link>
 						<button
-							onClick={(e) => handleDelte()}
-							className="block p-2 w-[60px] bg-red-600 text-white rounded-lg"
+							onClick={(e) => handleDelete()}
+							className="p-2 w-[80px] text-center bg-red-500 text-white rounded-md hover:bg-red-600 transition-all"
 						>
 							Delete
 						</button>
 					</>
 				) : (
-					<p>No ID available</p>
+					<p className="text-gray-500 italic">No ID available</p>
 				)}
 			</td>
 		</tr>

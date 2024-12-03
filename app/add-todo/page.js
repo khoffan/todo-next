@@ -15,7 +15,7 @@ export default function Todo() {
 						className="text-2xl hover:text-blue-400 hover:transition-all duration-500"
 					/>
 				</Link>
-				<p className="text-2xl font-bold">Todo list</p>
+				<p className="text-2xl font-bold">Add Todo list</p>
 				<div></div>
 			</div>
 			<FromAction functionTodo={saveTodo} todoId={null} />

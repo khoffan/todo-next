@@ -2,15 +2,23 @@ import Link from "next/link";
 import { Suspense } from "react";
 import Loading from "./loading";
 import TodoLabel from "./_components/todo_label";
+import { resolve } from "styled-jsx/css";
+let todoList = [];
 export default async function Home() {
-	const getdata = await fetch("http://localhost:3000/api/todos", {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json"
-		}
-	});
-	const result = await getdata.json();
-	const todoList = result["todos"];
+	await new Promise((resolve) => setInterval(resolve, 1000));
+
+	try {
+		const res = await fetch("http://localhost:3000/api/todos", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+		const result = await res.json();
+		todoList = result;
+	} catch (error) {
+		console.log(error);
+	}
 	return (
 		<div className="w-full divide-y-2">
 			<div className="flex justify-between px-6 mt-4 items-center">
@@ -27,29 +35,41 @@ export default async function Home() {
 					รายการ Todo ทั้งหมด
 				</p>
 				<Suspense fallback={<Loading />}>
-					<div className="overflow-y-auto max-h-96">
-						<table className="border border-collapse border-separate border-spacing-2 w-full">
-							<thead className="bg-gray-400">
-								<tr>
-									<th className="text-start border border-slate-400">
+					<div className="overflow-y-auto overflow-hidden-scroll max-h-96 p-4 bg-gray-50 rounded-lg shadow-md">
+						<table className="table-auto border-collapse border border-gray-300 w-full text-sm">
+							<thead>
+								<tr className="bg-gray-500 text-white">
+									<th className="px-4 py-2 text-left border border-gray-400">
 										Todo Name
 									</th>
-									<th className="text-start border border-slate-400">Status</th>
-									<th className="text-start border border-slate-400">Action</th>
+									<th className="px-4 py-2 text-left border border-gray-400">
+										Status
+									</th>
+									<th className="px-4 py-2 text-left border border-gray-400">
+										Action
+									</th>
 								</tr>
 							</thead>
 							<tbody>
-								{todoList != null &&
-									todoList.map((todo) => {
-										return (
-											<TodoLabel
-												key={todo.id}
-												todo_name={todo.todo_name}
-												todo_status={todo.todo_status}
-												id={todo.id}
-											/>
-										);
-									})}
+								{todoList != null && todoList.length > 0 ? (
+									todoList.map((todo) => (
+										<TodoLabel
+											key={todo.id}
+											todo_name={todo.todo_name}
+											todo_status={todo.todo_status}
+											id={todo.id}
+										/>
+									))
+								) : (
+									<tr>
+										<td
+											colSpan="3"
+											className="px-4 py-2 text-center text-gray-500"
+										>
+											No todos available
+										</td>
+									</tr>
+								)}
 							</tbody>
 						</table>
 					</div>

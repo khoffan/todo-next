@@ -5,9 +5,7 @@ const prima = new PrismaClient();
 export async function GET(request) {
 	try {
 		const todos = await prima.todos.findMany();
-		return Response.json({
-			todos
-		});
+		return Response.json(todos);
 	} catch (error) {
 		console.log(error);
 	}
@@ -15,14 +13,12 @@ export async function GET(request) {
 
 export async function POST(request) {
 	try {
-		const { todo_name, todo_status } = await request.json();
-
-		await prima.todos.create({
-			data: {
-				todo_name,
-				todo_status
-			}
+		const todoDatas = await request.json();
+		await prima.todos.createMany({
+			data: todoDatas,
+			skipDuplicates: true
 		});
+		console.log({ result: "ok" });
 
 		return Response.json({ result: "ok" });
 	} catch (error) {
