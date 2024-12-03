@@ -9,7 +9,7 @@ export async function saveTodo(todos) {
 	}
 	//const dataObj = { todo_name: todo, todo_status: todo_status };
 	try {
-		const res = await fetch(`${process.env.URL}/api/todos`, {
+		const res = await fetch(`http://127.0.0.1:3000/api/todos`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -30,7 +30,7 @@ export async function saveTodo(todos) {
 
 export async function deleteTodo(todoId) {
 	try {
-		const res = await fetch(`${process.env.URL}/api/todos/${todoId}`, {
+		const res = await fetch(`http://127.0.0.1:3000/api/todos/${todoId}`, {
 			method: "DELETE"
 		});
 		const result = await res.json();

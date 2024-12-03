@@ -5,7 +5,7 @@ import TodoLabel from "./_components/todo_label";
 let todoList = [];
 export default async function Home() {
 	try {
-		const res = await fetch(`${process.env.URL}/api/todos`, {
+		const res = await fetch(`http://127.0.0.1:3000/api/todos`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json"

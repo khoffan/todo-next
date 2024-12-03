@@ -13,7 +13,7 @@ export default function FromAction({ functionTodo, todoId }) {
 	const selectRef = useRef(null);
 
 	const fetchData = async (id) => {
-		const res = await fetch(`${process.env.URL}/api/todos/${id}`, {
+		const res = await fetch(`http://127.0.0.1:3000/api/todos/${id}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json"
