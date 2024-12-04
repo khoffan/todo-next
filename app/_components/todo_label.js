@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { deleteTodo } from "../add-todo/actions";
 export default function TodoLabel({ todo_name, todo_status, id }) {
-	const handleDelte = async () => {
+	const handleDelete = () => {
 		deleteTodo(id);
 	};
 
@@ -40,7 +40,7 @@ export default function TodoLabel({ todo_name, todo_status, id }) {
 							Edit
 						</Link>
 						<button
-							onClick={(e) => handleDelete()}
+							onClick={handleDelete}
 							className="p-2 w-[80px] text-center bg-red-500 text-white rounded-md hover:bg-red-600 transition-all"
 						>
 							Delete
