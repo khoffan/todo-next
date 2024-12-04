@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-
+import Swal from "sweetalert2";
 export default function FromAction({ functionTodo, todoId }) {
 	const [currentData, setCurrentData] = useState({
 		todo_name: "",
@@ -86,9 +86,34 @@ export default function FromAction({ functionTodo, todoId }) {
 	const handleSetTodos = (e) => {
 		e.preventDefault();
 		try {
-			localStorage.removeItem("todos");
-			functionTodo(previews);
-			setPreviews([]);
+			if (previews.length > 0) {
+				localStorage.removeItem("todos");
+				functionTodo(previews);
+				setPreviews([]);
+				Swal.fire({
+					text: "เพิ่ม todo สำเร็จ",
+					icon: "success",
+					scrollbarPadding: false,
+					allowOutsideClick: true,
+					allowEscapeKey: true,
+					showConfirmButton: false,
+					toast: true,
+					position: "top-end",
+					timer: 2000
+				});
+			} else {
+				Swal.fire({
+					text: "กรุณาเพิ่ม todo",
+					icon: "warning",
+					scrollbarPadding: false,
+					allowOutsideClick: true,
+					allowEscapeKey: true,
+					showConfirmButton: false,
+					timer: 2000,
+					toast: true,
+					position: "top"
+				});
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -97,9 +122,30 @@ export default function FromAction({ functionTodo, todoId }) {
 	const handlePatchTodo = (e) => {
 		e.preventDefault();
 		try {
-			localStorage.removeItem("edit-todo");
-			functionTodo(previews, todoId);
-			setPreviews([]);
+			if (previews.length > 0) {
+				localStorage.removeItem("edit-todo");
+				functionTodo(previews, todoId);
+				setPreviews([]);
+				Swal.fire({
+					text: "แก้ไข todo สำเร็จ",
+					icon: "success",
+					scrollbarPadding: false,
+					allowOutsideClick: true,
+					allowEscapeKey: true,
+					showConfirmButton: false,
+					timer: 2000
+				});
+			} else {
+				Swal.fire({
+					text: "กรุณาเพิ่ม todo",
+					icon: "warning",
+					scrollbarPadding: false,
+					allowOutsideClick: true,
+					allowEscapeKey: true,
+					showConfirmButton: false,
+					timer: 2000
+				});
+			}
 		} catch (error) {
 			console.log(error);
 		}
