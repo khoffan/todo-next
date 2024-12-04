@@ -13,14 +13,18 @@ export default function FromAction({ functionTodo, todoId }) {
 	const selectRef = useRef(null);
 
 	const fetchData = async (id) => {
-		const res = await fetch(`${process.env.API_URL}/api/todos/${id}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json"
-			}
-		});
-		const result = await res.json();
-		setCurrentData(result);
+		try {
+			const res = await fetch(`/api/todos/${id}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+			const result = await res.json();
+			setCurrentData(result);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const handleInputChange = (e) => {
@@ -167,6 +171,7 @@ export default function FromAction({ functionTodo, todoId }) {
 
 	useEffect(() => {
 		if (todoId && previews.length === 0) {
+			console.log(todoId, previews.length);
 			fetchData(todoId);
 		}
 		if (todoId) {
